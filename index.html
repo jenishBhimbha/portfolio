@@ -445,7 +445,7 @@
 		        <!-- Contact Section -->
 		        <section id="contact" class="py-20">
 		            <div class="max-w-7xl mx-auto px-4">
-		                <div class="bg-zinc-900/50 rounded-3xl p-12 backdrop-blur-xl border border-white/5">
+		                <div class="bg-zinc-900/50 rounded-3xl p-8 md:p-12 backdrop-blur-xl border border-white/5">
 		                    <div class="grid md:grid-cols-2 gap-16">
 		                        <div>
 		                            <span class="text-[#ff6b6b] text-sm uppercase tracking-wider">Contact</span>
@@ -464,23 +464,25 @@
 		                            </div>
 		                        </div>
 
-		                        <form class="space-y-6">
+		                        <form class="space-y-6" id="ctaForm">
 		                            <div class="space-y-2">
 		                                <label class="text-sm">Name</label>
-		                                <input type="text" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-[#ff6b6b] transition-colors">
+		                                <input type="text" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-[#ff6b6b] transition-colors" name="name" required>
 		                            </div>
 		                            
 		                            <div class="space-y-2">
 		                                <label class="text-sm">Email</label>
-		                                <input type="email" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-[#ff6b6b] transition-colors">
+		                                <input type="email" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-[#ff6b6b] transition-colors" name="email" required>
 		                            </div>
 		                            
 		                            <div class="space-y-2">
 		                                <label class="text-sm">Message</label>
-		                                <textarea rows="4" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-[#ff6b6b] transition-colors"></textarea>
+		                                <textarea rows="4" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-[#ff6b6b] transition-colors" name="message"></textarea>
 		                            </div>
+
+		                            <div id="form-messages" class="col-12"></div>
 		                            
-		                            <button class="w-full bg-gradient-to-r from-[#ff6b6b] to-[#ffd93d] text-black font-medium py-3 rounded-lg hover:opacity-90 transition-opacity">
+		                            <button id="submitBtn" class="w-full bg-gradient-to-r from-[#ff6b6b] to-[#ffd93d] text-black font-medium py-3 rounded-lg hover:opacity-90 transition-opacity">
 		                                Send Message
 		                            </button>
 		                        </form>
@@ -509,6 +511,7 @@
 		    </div>
 		</div>
 	</body>
+<script src="jquery.min.js"></script>
 	
 	<script src="https://cdn.tailwindcss.com"></script>
 
@@ -517,5 +520,57 @@
 	        const menu = document.getElementById('mobileMenu');
 	        menu.classList.toggle('active');
 	    }
+
+	    // CTA js code start
+	    jQuery(document).ready(function($) { // Ensure the DOM is fully loaded
+
+    $('#ctaForm').on('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission (page reload)
+
+        var form = $(this);
+        var formData = form.serialize(); // Collect all form data
+        var formMessages = $('#form-messages');
+        var submitButton = $('#submitBtn');
+
+        // Clear previous messages
+        formMessages.html('').removeClass('alert alert-success alert-danger');
+        // Disable button to prevent multiple submissions
+        submitButton.prop('disabled', true).text('VINNSLA Í GANGI...'); // Update button text
+
+        // Make the AJAX request
+        $.ajax({
+            type: 'POST',             // HTTP method
+            url: 'send_email.php',   // URL to your PHP script
+            data: formData,           // The serialized form data
+            dataType: 'json',         // Expected response type from server
+            encode: true
+        })
+        .done(function(response) {
+            // Request was successful, handle the response from PHP
+            console.log(response); // Log response for debugging
+
+            if (response.status === 'success') {
+                // Show success message
+                formMessages.html('<div class="alert alert-success">' + response.message + '</div>');
+                // Optionally reset the form
+                form[0].reset();
+            } else {
+                // Show error message
+                formMessages.html('<div class="alert alert-danger">' + response.message + '</div>');
+            }
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+            // Request failed (network error, server error, etc.)
+            console.error("AJAX Error: " + textStatus, errorThrown); // Log detailed error
+            formMessages.html('<div class="alert alert-danger">Óþekkt villa kom upp. Vinsamlegast reyndu aftur.</div>');
+        })
+        .always(function() {
+            // Re-enable the button and restore original text, regardless of success or failure
+            submitButton.prop('disabled', false).text('SKRÁ MIG Á PÓSTLISTA');
+        });
+    });
+
+});
+	    // CTA js code over
 	</script>
 </html>
