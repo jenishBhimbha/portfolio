@@ -522,59 +522,56 @@
 	    }
 
 	    // CTA js code start
-	    jQuery(document).ready(function($) { // Ensure the DOM is fully loaded
+jQuery(document).ready(function($) { // Ensure the DOM is fully loaded
 
     $('#ctaForm').on('submit', function(event) {
         event.preventDefault(); // Prevent the default form submission (page reload)
 
         var form = $(this);
-        var formData = form.serialize(); // Collect all form data
         var formMessages = $('#form-messages');
         var submitButton = $('#submitBtn');
 
+        // Extract values from the form
+        var name = form.find('input[name="name"]').val();
+        var email = form.find('input[name="email"]').val();
+        var message = form.find('textarea[name="message"]').val();
+
         // Clear previous messages
         formMessages.html('').removeClass('alert alert-success alert-danger');
+
         // Disable button to prevent multiple submissions
         submitButton.prop('disabled', true).text('VINNSLA Í GANGI...'); // Update button text
 
         // Make the AJAX request
         $.ajax({
-    type: "POST",
-    url: "http://localhost/portfolio/send_email.php",
-    data: { name: name, email: email, message: message },
-    success: function(response) {
-        console.log(response);
-    },
-    error: function(xhr, status, error) {
-        console.error(error);
-    }
-})
-        .done(function(response) {
-            // Request was successful, handle the response from PHP
-            console.log(response); // Log response for debugging
+            type: "POST",
+            url: "http://localhost/portfolio/send_email.php",
+            data: { name: name, email: email, message: message },
+            success: function(response) {
+                console.log(response); // Log response for debugging
 
-            if (response.status === 'success') {
-                // Show success message
-                formMessages.html('<div class="alert alert-success">' + response.message + '</div>');
-                // Optionally reset the form
-                form[0].reset();
-            } else {
-                // Show error message
-                formMessages.html('<div class="alert alert-danger">' + response.message + '</div>');
+                if (response.status === 'success') {
+                    // Show success message
+                    formMessages.html('<div class="alert alert-success">' + response.message + '</div>');
+                    // Optionally reset the form
+                    form[0].reset();
+                } else {
+                    // Show error message
+                    formMessages.html('<div class="alert alert-danger">' + response.message + '</div>');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX Error: " + status, error); // Log detailed error
+                formMessages.html('<div class="alert alert-danger">Óþekkt villa kom upp. Vinsamlegast reyndu aftur.</div>');
+            },
+            complete: function() {
+                // Re-enable the button and restore original text
+                submitButton.prop('disabled', false).text('SKRÁ MIG Á PÓSTLISTA');
             }
-        })
-        .fail(function(jqXHR, textStatus, errorThrown) {
-            // Request failed (network error, server error, etc.)
-            console.error("AJAX Error: " + textStatus, errorThrown); // Log detailed error
-            formMessages.html('<div class="alert alert-danger">Óþekkt villa kom upp. Vinsamlegast reyndu aftur.</div>');
-        })
-        .always(function() {
-            // Re-enable the button and restore original text, regardless of success or failure
-            submitButton.prop('disabled', false).text('SKRÁ MIG Á PÓSTLISTA');
         });
     });
 
 });
-	    // CTA js code over
+// CTA js code over
 	</script>
 </html>
