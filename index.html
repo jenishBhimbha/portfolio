@@ -539,12 +539,16 @@
 
         // Make the AJAX request
         $.ajax({
-            type: 'POST',             // HTTP method
-            url: 'send_email.php',   // URL to your PHP script
-            data: formData,           // The serialized form data
-            dataType: 'json',         // Expected response type from server
-            encode: true
-        })
+    type: "POST",
+    url: "http://localhost/portfolio/send_email.php",
+    data: { name: name, email: email, message: message },
+    success: function(response) {
+        console.log(response);
+    },
+    error: function(xhr, status, error) {
+        console.error(error);
+    }
+});
         .done(function(response) {
             // Request was successful, handle the response from PHP
             console.log(response); // Log response for debugging
