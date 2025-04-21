@@ -442,7 +442,7 @@
 		                            </div>
 		                        </div>
 
-		                        <form class="space-y-6" id="ctaForm">
+		                        <form class="space-y-6">
 		                            <div class="space-y-2">
 		                                <label class="text-sm">Name</label>
 		                                <input type="text" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-[#ff6b6b] transition-colors" name="name" required>
@@ -457,12 +457,8 @@
 		                                <label class="text-sm">Message</label>
 		                                <textarea rows="4" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-[#ff6b6b] transition-colors" name="message"></textarea>
 		                            </div>
-
-		                            <div id="form-messages" class="col-12"></div>
 		                            
-		                            <button id="submitBtn" class="w-full bg-gradient-to-r from-[#ff6b6b] to-[#ffd93d] text-black font-medium py-3 rounded-lg hover:opacity-90 transition-opacity">
-		                                Send Message
-		                            </button>
+		                            <button id="submitBtn" class="w-full bg-gradient-to-r from-[#ff6b6b] to-[#ffd93d] text-black font-medium py-3 rounded-lg hover:opacity-90 transition-opacity">Send Message</button>
 		                        </form>
 		                    </div>
 		                </div>
@@ -489,7 +485,6 @@
 		    </div>
 		</div>
 	</body>
-<script src="jquery.min.js"></script>
 	
 	<script src="https://cdn.tailwindcss.com"></script>
 
@@ -498,58 +493,5 @@
 	        const menu = document.getElementById('mobileMenu');
 	        menu.classList.toggle('active');
 	    }
-
-	    // CTA js code start
-jQuery(document).ready(function($) { // Ensure the DOM is fully loaded
-
-    $('#ctaForm').on('submit', function(event) {
-        event.preventDefault(); // Prevent the default form submission (page reload)
-
-        var form = $(this);
-        var formMessages = $('#form-messages');
-        var submitButton = $('#submitBtn');
-
-        // Extract values from the form
-        var name = form.find('input[name="name"]').val();
-        var email = form.find('input[name="email"]').val();
-        var message = form.find('textarea[name="message"]').val();
-
-        // Clear previous messages
-        formMessages.html('').removeClass('alert alert-success alert-danger');
-
-        // Disable button to prevent multiple submissions
-        submitButton.prop('disabled', true).text('VINNSLA Í GANGI...'); // Update button text
-
-        // Make the AJAX request
-        $.ajax({
-            type: "POST",
-            url: "http://localhost/portfolio/send_email.php",
-            data: { name: name, email: email, message: message },
-            success: function(response) {
-                console.log(response); // Log response for debugging
-
-                if (response.status === 'success') {
-                    // Show success message
-                    formMessages.html('<div class="alert alert-success">' + response.message + '</div>');
-                    // Optionally reset the form
-                    form[0].reset();
-                } else {
-                    // Show error message
-                    formMessages.html('<div class="alert alert-danger">' + response.message + '</div>');
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("AJAX Error: " + status, error); // Log detailed error
-                formMessages.html('<div class="alert alert-danger">Óþekkt villa kom upp. Vinsamlegast reyndu aftur.</div>');
-            },
-            complete: function() {
-                // Re-enable the button and restore original text
-                submitButton.prop('disabled', false).text('SKRÁ MIG Á PÓSTLISTA');
-            }
-        });
-    });
-
-});
-// CTA js code over
 	</script>
 </html>
