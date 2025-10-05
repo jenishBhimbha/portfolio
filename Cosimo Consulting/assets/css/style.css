@@ -460,6 +460,17 @@ section.process-section .process-card {
     height: 100%;
 }
 
+@media (max-width: 599px) {
+    section.process-section .process-card {
+        padding:24px 32px;
+        max-width: 300px;
+        max-height:512px;
+        min-height:512px;
+        width: 100%;
+        height: 100%;
+    }
+}
+
 section.process-section .process-card .text-desc{
     font-weight: 300;
     font-size: 16px;
@@ -587,6 +598,15 @@ section.news-section::after {
     max-width: 416px;
     min-width: 416px;
     height: 273px;
+}
+
+@media (max-width: 599px) {
+    .slider_wrapper .card {
+        width: 100%;
+        max-width: 300px;
+        min-width: 300px;
+        height: 273px;
+    }
 }
 
 .slick-footer-slider .news-img {
